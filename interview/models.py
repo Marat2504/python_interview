@@ -1,5 +1,6 @@
 from django.db import models
 import uuid
+from account.models import User
 
 
 class Offer(models.Model):
@@ -14,7 +15,7 @@ class Offer(models.Model):
     link = models.URLField(null=False, blank=True, verbose_name='Ссылка')
     description = models.TextField(null=False, blank=True, verbose_name='Описание')
 
-    salary = models.CharField(max_length=100, null=True, blank=True, verbose_name='Оклад')
+    salary = models.BigIntegerField(null=True, blank=True, verbose_name='Оклад')
     location = models.CharField(max_length=150, null=True, blank=True, verbose_name='Город')
     employment_type = models.CharField(max_length=100, choices=(('remote', 'Удаленная работа'), ('office', 'Офис')),
                                        default='remote', verbose_name='Тип занятости')
@@ -26,5 +27,14 @@ class Offer(models.Model):
     create_date = models.DateTimeField(auto_now_add=True)
     update_date = models.DateTimeField(auto_now=True)
 
+    user = models.ForeignKey(User, related_name='offers', on_delete=models.PROTECT, null=True, default=None)
+
+    class Meta:
+        ordering = ['update_date']
+        verbose_name = 'Вакансия'
+        verbose_name_plural = 'Вакансии'
+
     def __str__(self):
         return self.title
+
+
